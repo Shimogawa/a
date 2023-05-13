@@ -5,7 +5,7 @@
 namespace ll::engine::events {
 
 enum EventType {
-  SET_FRAME_BUFFER_SIZE = 518,
+  FRAME_BUFFER_SIZE = 518,
 };
 
 class AbstractEvent {

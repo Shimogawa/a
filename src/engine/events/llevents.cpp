@@ -5,7 +5,7 @@ namespace ll::engine::events {
 AbstractEvent::~AbstractEvent() {}
 
 EventType GLFrameBufferSizeEvent::type() const {
-  return SET_FRAME_BUFFER_SIZE;
+  return FRAME_BUFFER_SIZE;
 }
 
 int GLFrameBufferSizeEvent::width() const {

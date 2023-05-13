@@ -14,9 +14,16 @@
 
 #pragma once
 
+#include <iostream>
+
+inline void myassert(const char* expr, const char* file, int line) {
+  std::cerr << expr << " at " << file << '#' << line << '\n';
+}
+
 //---- Define assertion handler. Defaults to calling assert().
 // If your macro uses multiple statements, make sure is enclosed in a 'do { .. } while (0)' block so it can be used as a single statement.
-//#define IM_ASSERT(_EXPR)  MyAssert(_EXPR)
+#define IM_ASSERT(_EXPR) \
+  (!!(_EXPR) ? void(0) : myassert(#_EXPR, __FILE__, __LINE__))
 //#define IM_ASSERT(_EXPR)  ((void)(_EXPR))     // Disable asserts
 
 //---- Define attributes of all API symbols declarations, e.g. for DLL under Windows

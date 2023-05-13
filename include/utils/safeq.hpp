@@ -3,13 +3,13 @@
 #include <mutex>
 #include <queue>
 
-namespace ll::safeq {
+namespace ll::utils::safeq {
 
 template<typename T>
 class SafeQueue {
 private:
   std::queue<T> _q;
-  std::mutex _mu;
+  mutable std::mutex _mu;
 
   using size_type = typename std::queue<T>::size_type;
 
@@ -30,7 +30,7 @@ public:
     return _q.front();
   }
   inline const T& front() const {
-    std::lock_guard<std::mutex> lock(const_cast<std::mutex&>(_mu));
+    std::lock_guard<std::mutex> lock(_mu);
     return _q.front();
   }
 
@@ -64,4 +64,4 @@ public:
   }
 };
 
-}// namespace ll::safeq
+}// namespace ll::utils::safeq

@@ -8,49 +8,44 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "logic/events.hpp"
+#include "logic/imgui.hpp"
 #include "utils/safeq.hpp"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <thread>
 
-void initImgui(GLFWwindow* window) {
-  IMGUI_CHECKVERSION();
-  ImGui::CreateContext();
-  ImGuiIO& io = ImGui::GetIO();
-  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
-  io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
-  ImGui::StyleColorsDark();
-  ImGui_ImplGlfw_InitForOpenGL(window, true);
-  ImGui_ImplOpenGL3_Init("#version 130");
-  io.Fonts->AddFontFromFileTTF("./res/Ubuntu.ttf", 18.0f);
+GLFWwindow* initMainWindow() {
+  glfwInit();
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+  GLFWwindow* window = glfwCreateWindow(800, 600, "x", nullptr, nullptr);
+  if (window == nullptr) {
+    std::cerr << "no window\n";
+    return nullptr;
+  }
+
+  glfwMakeContextCurrent(window);
+  if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+    std::cout << "Failed to initialize GLAD" << std::endl;
+    return nullptr;
+  }
+
+  glViewport(0, 0, 800, 600);
+  ll::logic::events::setupCallbacks(window);
+  ll::logic::imgui::imguiInit(window);
+  return window;
 }
 
 void cleanUp(GLFWwindow* window) {
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
+  ll::logic::imgui::imguiCleanup();
   glfwDestroyWindow(window);
   glfwTerminate();
-}
-
-static int fc = 0;
-
-void imguiFrame() {
-  ImGui_ImplGlfw_NewFrame();
-  ImGui_ImplOpenGL3_NewFrame();
-
-  ImGui::NewFrame();
-
-  // ImGui::ShowDemoWindow(nullptr);
-  {
-    ImGui::Begin("info");
-    auto&& io = ImGui::GetIO();
-    ImGui::Text("F# %d, FR %.2f, DT %.2f", fc, io.Framerate, 1000.0f / io.Framerate);
-    ImGui::End();
-  }
-
-  ImGui::Render();
 }
 
 void renderLoop(GLFWwindow* window) {
@@ -62,12 +57,11 @@ void renderLoop(GLFWwindow* window) {
       while (!glfwWindowShouldClose(window)) {
         // deal with events
         glfwMakeContextCurrent(nullptr);
-        processEvents();
+        ll::logic::events::processEvents();
         glfwMakeContextCurrent(window);
         glfwSwapBuffers(window);
-        fc++;
 
-        imguiFrame();
+        ll::logic::imgui::updateImguiFrame();
 
         // GLuint VBO;
         // glGenBuffers(1, &VBO);
@@ -93,32 +87,12 @@ void renderLoop(GLFWwindow* window) {
 }
 
 int main() {
-  glfwInit();
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-  GLFWwindow* window = glfwCreateWindow(800, 600, "x", nullptr, nullptr);
-  if (window == nullptr) {
-    std::cerr << "no window\n";
-    return 1;
-  }
-
-  glfwMakeContextCurrent(window);
-  if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-    std::cout << "Failed to initialize GLAD" << std::endl;
-    return -1;
-  }
-
-  glViewport(0, 0, 800, 600);
-  glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
-
-  initImgui(window);
 
   // ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+  GLFWwindow* window = initMainWindow();
+  if (!window) {
+    return 1;
+  }
 
   renderLoop(window);
 
