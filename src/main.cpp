@@ -7,8 +7,8 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-#include "engine/events/llevents.h"
-#include "utils/safeq.h"
+#include "logic/events.hpp"
+#include "utils/safeq.hpp"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -35,7 +35,6 @@ void cleanUp(GLFWwindow* window) {
 }
 
 static int fc = 0;
-static ll::safeq::SafeQueue<std::unique_ptr<ll::engine::events::AbstractEvent>> q;
 
 void imguiFrame() {
   ImGui_ImplGlfw_NewFrame();
@@ -63,20 +62,7 @@ void renderLoop(GLFWwindow* window) {
       while (!glfwWindowShouldClose(window)) {
         // deal with events
         glfwMakeContextCurrent(nullptr);
-        while (!q.empty()) {
-          auto x = q.dequeue();
-          switch (x->type()) {
-            case ll::engine::events::EventType::SET_FRAME_BUFFER_SIZE:
-              glfwMakeContextCurrent(x->window());
-              glViewport(
-                0, 0,
-                static_cast<ll::engine::events::GLSetFrameBufferSizeEvent*>(x.get())->width(),
-                static_cast<ll::engine::events::GLSetFrameBufferSizeEvent*>(x.get())->height());
-              break;
-            default:
-              break;
-          }
-        }
+        processEvents();
         glfwMakeContextCurrent(window);
         glfwSwapBuffers(window);
         fc++;
@@ -106,10 +92,6 @@ void renderLoop(GLFWwindow* window) {
   t.join();
 }
 
-void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
-  q.push(std::make_unique<ll::engine::events::GLSetFrameBufferSizeEvent>(window, width, height));
-}
-
 int main() {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -132,7 +114,7 @@ int main() {
   }
 
   glViewport(0, 0, 800, 600);
-  glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+  glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
 
   initImgui(window);
 

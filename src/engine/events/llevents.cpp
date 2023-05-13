@@ -1,18 +1,18 @@
-#include "engine/events/llevents.h"
+#include "engine/events/llevents.hpp"
 
 namespace ll::engine::events {
 
 AbstractEvent::~AbstractEvent() {}
 
-EventType GLSetFrameBufferSizeEvent::type() const {
+EventType GLFrameBufferSizeEvent::type() const {
   return SET_FRAME_BUFFER_SIZE;
 }
 
-int GLSetFrameBufferSizeEvent::width() const {
+int GLFrameBufferSizeEvent::width() const {
   return _width;
 }
 
-int GLSetFrameBufferSizeEvent::height() const {
+int GLFrameBufferSizeEvent::height() const {
   return _height;
 }
 

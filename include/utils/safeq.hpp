@@ -30,7 +30,7 @@ public:
     return _q.front();
   }
   inline const T& front() const {
-    std::lock_guard<std::mutex> lock(_mu);
+    std::lock_guard<std::mutex> lock(const_cast<std::mutex&>(_mu));
     return _q.front();
   }
 

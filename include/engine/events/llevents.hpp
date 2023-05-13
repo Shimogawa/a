@@ -22,14 +22,14 @@ public:
   [[nodiscard]] virtual EventType type() const = 0;
 };
 
-class GLSetFrameBufferSizeEvent : public AbstractEvent {
+class GLFrameBufferSizeEvent : public AbstractEvent {
 private:
   int _width, _height;
 
 public:
-  GLSetFrameBufferSizeEvent(GLFWwindow* window, int width, int height)
+  GLFrameBufferSizeEvent(GLFWwindow* window, int width, int height)
       : AbstractEvent(window), _width(width), _height(height) {}
-  ~GLSetFrameBufferSizeEvent() override {}
+  ~GLFrameBufferSizeEvent() override {}
   [[nodiscard]] EventType type() const override;
   [[nodiscard]] int width() const;
   [[nodiscard]] int height() const;
