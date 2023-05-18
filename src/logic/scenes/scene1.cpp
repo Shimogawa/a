@@ -1,7 +1,9 @@
 #define GLFW_INCLUDE_NONE
 #include "imgui.h"
+
 #include "logic/scenes.hpp"
 
+#include <string>
 
 namespace ll::logic::scenes {
 
@@ -90,6 +92,10 @@ void Scene1::draw() {
   glUseProgram(shaderProgram);
   glBindVertexArray(vao);
   glDrawArrays(GL_TRIANGLES, 0, 3);
+}
+
+std::string Scene1::name() {
+  return "Scene 1";
 }
 
 }// namespace ll::logic::scenes

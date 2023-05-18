@@ -2,9 +2,12 @@
 #define GLFW_INCLUDE_NONE
 
 #include "GLFW/glfw3.h"
-#include "engine/scenes/llscene.hpp"
 #include "glad/glad.h"
+
+#include "engine/scenes/llscene.hpp"
+
 #include <memory>
+#include <string>
 #include <utility>
 
 namespace ll::logic::scenes {
@@ -26,6 +29,7 @@ public:
   ~Scene1();
   void drawImgui() override;
   void draw() override;
+  std::string name() override;
 };
 
 }// namespace ll::logic::scenes

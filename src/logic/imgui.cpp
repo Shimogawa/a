@@ -1,3 +1,5 @@
+#include <cstddef>
+#include <vector>
 #define GLFW_INCLUDE_NONE
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -15,6 +17,8 @@ static bool showMetrics = true;
 
 static int fc = 0;
 
+std::vector<std::shared_ptr<ll::engine::scene::AbstractScene>> scenes;
+
 void imguiInit(GLFWwindow* window) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -25,6 +29,10 @@ void imguiInit(GLFWwindow* window) {
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init("#version 130");
   io.Fonts->AddFontFromFileTTF("./res/Ubuntu.ttf", 18.0f);
+
+  scenes = {
+    std::shared_ptr<ll::engine::scene::AbstractScene>(new ll::logic::scenes::Scene1(window)),
+  };
 }
 
 void updateImguiFrame(
@@ -39,9 +47,22 @@ void updateImguiFrame(
   // ImGui::ShowDemoWindow(nullptr);
   {
     ImGui::Begin("Info");
-    if (ImGui::Button("Scene 1"))
-      ll::logic::scenes::setCurrentScene(
-        std::shared_ptr<ll::engine::scene::AbstractScene>(new ll::logic::scenes::Scene1(window)));
+    ImGui::BeginChild("scenes", ImVec2(0, ImGui::GetFrameHeightWithSpacing() + 30), true, ImGuiWindowFlags_HorizontalScrollbar);
+    if (ImGui::Button("Clear scene"))
+      ll::logic::scenes::setCurrentScene(nullptr);
+
+    for (const auto& s: scenes) {
+      ImGui::SameLine();
+      ImGui::PushID(static_cast<int>(s->id()));
+      if (ImGui::Button(s->name().c_str()))
+        ll::logic::scenes::setCurrentScene(s);
+      ImGui::PopID();
+    }
+    // ImGui::SameLine();
+    // if (ImGui::Button("Scene 1"))
+    //   ll::logic::scenes::setCurrentScene(
+    //     std::shared_ptr<ll::engine::scene::AbstractScene>(new ll::logic::scenes::Scene1(window)));
+    ImGui::EndChild();
     if (ImGui::Button(showMetrics ? "Hide metrics" : "Show metrics")) {
       showMetrics = !showMetrics;
     }
@@ -62,6 +83,8 @@ void imguiCleanup() {
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
+
+  scenes.clear();
 }
 
 }// namespace ll::logic::imgui

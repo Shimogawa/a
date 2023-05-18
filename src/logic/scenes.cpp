@@ -9,6 +9,11 @@ std::shared_ptr<s::AbstractScene> getCurrentScene() {
 }
 
 void setCurrentScene(std::shared_ptr<s::AbstractScene> s) {
+  if (s == nullptr) {
+    currentScene = nullptr;
+    return;
+  }
+  if (currentScene && s->id() == currentScene->id()) return;
   currentScene = std::move(s);
 }
 

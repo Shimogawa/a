@@ -17,7 +17,6 @@ protected:
   explicit AbstractEvent(GLFWwindow* window) : EngineObject(window) {}
 
 public:
-  [[nodiscard]] inline GLFWwindow* window() const { return _window; }
   [[nodiscard]] virtual EventType type() const = 0;
 };
 
