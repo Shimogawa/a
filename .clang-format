@@ -40,7 +40,10 @@ FixNamespaceComments: true
 IndentAccessModifiers: false
 IndentCaseLabels: true
 IndentPPDirectives: None
+IndentRequires: false
 IndentWidth: 2
+IndentWrappedFunctionNames: false
+# InsertTrailingCommas: true
 KeepEmptyLinesAtTheStartOfBlocks: true
 MaxEmptyLinesToKeep: 2
 NamespaceIndentation: Inner
@@ -48,6 +51,7 @@ ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
 PointerAlignment: Left
 ReflowComments: false
+# RequiresClausePosition: OwnLine
 SpaceAfterCStyleCast: true
 SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false

@@ -2,20 +2,19 @@
 
 #include <GLFW/glfw3.h>
 
+#include "engine/object.hpp"
 namespace ll::engine::events {
 
 enum EventType {
   FRAME_BUFFER_SIZE = 518,
 };
 
-class AbstractEvent {
+class AbstractEvent : public EngineObject {
 public:
   virtual ~AbstractEvent() = 0;
 
 protected:
-  GLFWwindow* _window;
-
-  explicit AbstractEvent(GLFWwindow* window) : _window(window) {}
+  explicit AbstractEvent(GLFWwindow* window) : EngineObject(window) {}
 
 public:
   [[nodiscard]] inline GLFWwindow* window() const { return _window; }

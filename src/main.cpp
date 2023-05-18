@@ -1,3 +1,5 @@
+#include <cstddef>
+#include <memory>
 #define GLFW_INCLUDE_NONE
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
@@ -9,6 +11,7 @@
 
 #include "logic/events.hpp"
 #include "logic/imgui.hpp"
+#include "logic/scenes.hpp"
 #include "utils/safeq.hpp"
 
 #include <GLFW/glfw3.h>
@@ -49,36 +52,28 @@ void cleanUp(GLFWwindow* window) {
 }
 
 void renderLoop(GLFWwindow* window) {
-  glfwMakeContextCurrent(nullptr);
-
   std::thread t(
     [window]() {
       // glfwMakeContextCurrent(window);
       while (!glfwWindowShouldClose(window)) {
-        // deal with events
+        glfwMakeContextCurrent(window);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        auto scene = ll::logic::scenes::getCurrentScene();
+        if (scene != nullptr) {
+          scene->draw();
+        }
+
         glfwMakeContextCurrent(nullptr);
         ll::logic::events::processEvents();
         glfwMakeContextCurrent(window);
-        glfwSwapBuffers(window);
-
-        ll::logic::imgui::updateImguiFrame();
-
-        // GLuint VBO;
-        // glGenBuffers(1, &VBO);
-        // glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        // float vertices[] = {
-        //   -0.5f, -0.5f, 0.0f,
-        //   0.5f, -0.5f, 0.0f,
-        //   0.0f, 0.5f, 0.0f};
-        // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-
-        // glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
+        ll::logic::imgui::updateImguiFrame(window, scene);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(window);
       }
     });
 
+  glfwMakeContextCurrent(nullptr);
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
   }

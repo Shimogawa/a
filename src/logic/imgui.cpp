@@ -1,8 +1,17 @@
-#include "logic/imgui.hpp"
+#define GLFW_INCLUDE_NONE
+#include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include <memory>
+
+#include "engine/scenes/llscene.hpp"
+#include "logic/imgui.hpp"
+#include "logic/scenes.hpp"
+
 namespace ll::logic::imgui {
+
+static bool showMetrics = true;
 
 static int fc = 0;
 
@@ -18,7 +27,9 @@ void imguiInit(GLFWwindow* window) {
   io.Fonts->AddFontFromFileTTF("./res/Ubuntu.ttf", 18.0f);
 }
 
-void updateImguiFrame() {
+void updateImguiFrame(
+  GLFWwindow* window,
+  std::shared_ptr<ll::engine::scene::AbstractScene> scene) {
   ImGui_ImplGlfw_NewFrame();
   ImGui_ImplOpenGL3_NewFrame();
   ImGui::NewFrame();
@@ -27,11 +38,22 @@ void updateImguiFrame() {
 
   // ImGui::ShowDemoWindow(nullptr);
   {
-    ImGui::Begin("info");
-    auto&& io = ImGui::GetIO();
-    ImGui::Text("F# %d, FR %.2f, DT %.2f", fc, io.Framerate, 1000.0f / io.Framerate);
+    ImGui::Begin("Info");
+    if (ImGui::Button("Scene 1"))
+      ll::logic::scenes::setCurrentScene(
+        std::shared_ptr<ll::engine::scene::AbstractScene>(new ll::logic::scenes::Scene1(window)));
+    if (ImGui::Button(showMetrics ? "Hide metrics" : "Show metrics")) {
+      showMetrics = !showMetrics;
+    }
+    if (showMetrics) {
+      ImGui::Separator();
+      auto&& io = ImGui::GetIO();
+      ImGui::Text("F# %d, FR %.2f, DT %.2f", fc, io.Framerate, 1000.0f / io.Framerate);
+    }
     ImGui::End();
   }
+  if (scene != nullptr)
+    scene->drawImgui();
 
   ImGui::Render();
 }
