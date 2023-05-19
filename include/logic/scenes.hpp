@@ -5,6 +5,7 @@
 #include "glad/glad.h"
 
 #include "engine/scenes/llscene.hpp"
+#include "engine/shader.hpp"
 
 #include <memory>
 #include <string>
@@ -20,7 +21,7 @@ void setCurrentScene(std::shared_ptr<s::AbstractScene> s);
 
 class Scene1 : public s::AbstractScene {
 private:
-  unsigned int shaderProgram;
+  ll::engine::Shader shader;
   GLuint vao;
   GLuint vbo;
 

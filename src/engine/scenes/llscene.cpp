@@ -2,7 +2,6 @@
 #include "GLFW/glfw3.h"
 
 #include <atomic>
-#include <stdint.h>
 
 namespace ll::engine::scene {
 
@@ -12,6 +11,6 @@ AbstractScene::AbstractScene(GLFWwindow* window) : EngineObject(window) {
   _id = uniqueid.fetch_add(1);
 }
 
-AbstractScene::~AbstractScene() {}
+AbstractScene::~AbstractScene() = default;
 
 }// namespace ll::engine::scene

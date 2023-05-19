@@ -1,7 +1,6 @@
 cmake-build-*/
 .idea/
 .cache/
-res/
 
 compile_commands.json
 imgui.ini

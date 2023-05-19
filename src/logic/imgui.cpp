@@ -1,4 +1,3 @@
-#include <cstddef>
 #include <vector>
 #define GLFW_INCLUDE_NONE
 #include "imgui.h"
@@ -69,7 +68,7 @@ void updateImguiFrame(
     if (showMetrics) {
       ImGui::Separator();
       auto&& io = ImGui::GetIO();
-      ImGui::Text("F# %d, FR %.2f, DT %.2f", fc, io.Framerate, 1000.0f / io.Framerate);
+      ImGui::Text("F# %d, FR %.2f", fc, io.Framerate);
     }
     ImGui::End();
   }
