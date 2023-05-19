@@ -67,23 +67,23 @@ GLint Shader::getUniformLocation(const std::string& name) {
 }
 
 template <>
-void Shader::setUniform<1, GLint>(const std::string& name, GLint i) {
+void Shader::setUniform<GLint>(const std::string& name, GLint i) {
   glUniform1i(getUniformLocation(name), i);
 }
 
 template <>
-void Shader::setUniform<1, bool>(const std::string& name, bool b) {
+void Shader::setUniform<bool>(const std::string& name, bool b) {
   glUniform1i(getUniformLocation(name), static_cast<GLint>(b));
 }
 
 template <>
-void Shader::setUniform<1, GLfloat>(const std::string& name, GLfloat f) {
+void Shader::setUniform<GLfloat>(const std::string& name, GLfloat f) {
   glUniform1f(getUniformLocation(name), f);
 }
 
 template <>
-void Shader::setUniform<4, float*>(const std::string& name, float f[4]) {
-  glUniform4f(getUniformLocation(name), f[0], f[1], f[2], f[3]);
+void Shader::setUniform<GLfloat>(const std::string& name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+  glUniform4f(getUniformLocation(name), x, y, z, w);
 }
 
 }// namespace ll::engine

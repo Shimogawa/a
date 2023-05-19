@@ -25,8 +25,8 @@ public:
   void use();
   GLint getUniformLocation(const std::string& name);
 
-  template <int N = 1, typename T>
-  void setUniform(const std::string& name, T value);
+  template <typename T, typename... Ts>
+  void setUniform(const std::string& name, T value, Ts... vals);
 };
 
 }// namespace ll::engine

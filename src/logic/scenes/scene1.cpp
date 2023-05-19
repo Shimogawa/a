@@ -51,8 +51,7 @@ void Scene1::drawImgui() {
 
 void Scene1::draw() {
   shader.use();
-  float u[] = {color[0], color[1], color[2], 1.0f};
-  shader.setUniform<4>("ourColor", u);
+  shader.setUniform("ourColor", color[0], color[1], color[2], 1.0f);
   glBindVertexArray(vao);
   glDrawArrays(GL_TRIANGLES, 0, 3);
 }
