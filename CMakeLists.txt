@@ -19,6 +19,7 @@ file(GLOB_RECURSE HEADER_FILES
         ${CMAKE_SOURCE_DIR}/include/*.hpp)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/libs/glfw)
+add_subdirectory(${CMAKE_SOURCE_DIR}/libs/glm)
 
 include_directories(
         "${CMAKE_SOURCE_DIR}/include"
@@ -26,4 +27,4 @@ include_directories(
 )
 
 add_executable(logl ${SOURCE_FILES} ${HEADER_FILES})
-target_link_libraries(logl PRIVATE glfw)
+target_link_libraries(logl PRIVATE glfw glm)

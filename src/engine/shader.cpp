@@ -1,4 +1,3 @@
-#include <initializer_list>
 #define GLFW_INCLUDE_NONE
 #include "engine/shader.hpp"
 #include "engine/utils.hpp"
@@ -84,6 +83,11 @@ void Shader::setUniform<GLfloat>(const std::string& name, GLfloat f) {
 template <>
 void Shader::setUniform<GLfloat>(const std::string& name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
   glUniform4f(getUniformLocation(name), x, y, z, w);
+}
+
+template <>
+void Shader::setUniform<glm::vec4>(const std::string& name, glm::vec4 fs) {
+  glUniform4f(getUniformLocation(name), fs.x, fs.y, fs.z, fs.w);
 }
 
 }// namespace ll::engine
