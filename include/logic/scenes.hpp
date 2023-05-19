@@ -25,6 +25,8 @@ private:
   GLuint vao;
   GLuint vbo;
 
+  float color[3] = {0.0f};
+
 public:
   Scene1(GLFWwindow* window);
   ~Scene1();

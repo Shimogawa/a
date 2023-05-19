@@ -1,3 +1,4 @@
+#include <initializer_list>
 #define GLFW_INCLUDE_NONE
 #include "engine/shader.hpp"
 #include "engine/utils.hpp"
@@ -49,16 +50,40 @@ Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentS
   glDeleteShader(fId);
 }
 
+Shader::~Shader() {
+  if (_hasError)
+    return;
+  glDeleteProgram(_programId);
+}
+
 void Shader::use() {
   if (_hasError)
     return;
   glUseProgram(_programId);
 }
 
-Shader::~Shader() {
-  if (_hasError)
-    return;
-  glDeleteProgram(_programId);
+GLint Shader::getUniformLocation(const std::string& name) {
+  return glGetUniformLocation(_programId, name.c_str());
+}
+
+template <>
+void Shader::setUniform<1, GLint>(const std::string& name, GLint i) {
+  glUniform1i(getUniformLocation(name), i);
+}
+
+template <>
+void Shader::setUniform<1, bool>(const std::string& name, bool b) {
+  glUniform1i(getUniformLocation(name), static_cast<GLint>(b));
+}
+
+template <>
+void Shader::setUniform<1, GLfloat>(const std::string& name, GLfloat f) {
+  glUniform1f(getUniformLocation(name), f);
+}
+
+template <>
+void Shader::setUniform<4, float*>(const std::string& name, float f[4]) {
+  glUniform4f(getUniformLocation(name), f[0], f[1], f[2], f[3]);
 }
 
 }// namespace ll::engine

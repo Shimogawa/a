@@ -3,6 +3,7 @@
 #include "engine/utils.hpp"
 #include <cstddef>
 #include <fstream>
+#include <initializer_list>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -22,6 +23,10 @@ inline std::optional<std::string> readFullFile(const std::string& path) {
   std::stringstream buffer;
   buffer << f.rdbuf();
   return buffer.str();
+}
+
+inline constexpr bool sizeIs(std::initializer_list<float> ll, size_t s) {
+  return ll.size() == s;
 }
 
 namespace gl {

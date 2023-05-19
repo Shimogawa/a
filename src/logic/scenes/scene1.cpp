@@ -45,11 +45,14 @@ Scene1::~Scene1() {
 
 void Scene1::drawImgui() {
   ImGui::Begin("Scene 1");
+  ImGui::SliderFloat3("RGB", color, 0.0f, 1.0f);
   ImGui::End();
 }
 
 void Scene1::draw() {
   shader.use();
+  float u[] = {color[0], color[1], color[2], 1.0f};
+  shader.setUniform<4>("ourColor", u);
   glBindVertexArray(vao);
   glDrawArrays(GL_TRIANGLES, 0, 3);
 }
