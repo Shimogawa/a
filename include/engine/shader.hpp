@@ -6,28 +6,63 @@
 #include <glm/glm.hpp>
 
 #include <string>
+#include <type_traits>
+#include <vector>
+
+#include "engine/gl.hpp"
+#include "engine/utils.hpp"
 
 namespace ll::engine {
 
-class Shader {
-private:
-  GLuint _programId = 0;
+class ShaderBase : public gl::GLObject {
+protected:
+  ShaderBase() = default;
   bool _hasError = true;
   std::string _message;
 
 public:
-  Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
-  ~Shader();
+  virtual ~ShaderBase() = 0;
 
-  inline bool ok() { return !_hasError; }
-  inline bool fail() { return _hasError; }
+  [[nodiscard]] inline bool ok() const { return !_hasError; }
+  [[nodiscard]] inline bool fail() const { return _hasError; }
   inline std::string errorMessage() { return _message; }
+};
+
+class Shader : public ShaderBase {
+private:
+  gl::ShaderType _type;
+
+public:
+  Shader(const std::string& path, gl::ShaderType type);
+  ~Shader() override;
+
+  inline gl::ShaderType type() { return _type; }
+};
+
+class ShaderProgram : public ShaderBase {
+public:
+  template <typename... T>
+  requires(std::is_same_v<Shader, T> && ...)
+  explicit ShaderProgram(T... shaders);
+  explicit ShaderProgram(const std::vector<Shader>& shaders);
+  ~ShaderProgram() override;
 
   void use();
   GLint getUniformLocation(const std::string& name);
 
   template <typename T, typename... Ts>
-  void setUniform(const std::string& name, T value, Ts... vals);
+  void setUniform(const std::string& name, T value, Ts... values);
 };
+
+
+template <typename... T>
+requires(std::is_same_v<Shader, T> && ...)
+ShaderProgram::ShaderProgram(T... shaders)
+    : ShaderProgram(
+#ifdef _MSC_VER
+        std::vector<Shader>
+#endif
+        {shaders...}) {
+}
 
 }// namespace ll::engine

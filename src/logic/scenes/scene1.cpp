@@ -10,7 +10,9 @@ namespace ll::logic::scenes {
 
 Scene1::Scene1(GLFWwindow* window)
     : s::AbstractScene(window),
-      shader("res/shaders/scene1/vertex.glsl", "res/shaders/scene1/fragment.glsl") {
+      shader(
+        engine::Shader("res/shaders/scene1/vertex.glsl", engine::gl::ShaderType::VERTEX),
+        engine::Shader("res/shaders/scene1/fragment.glsl", engine::gl::ShaderType::FRAGMENT)) {
   if (shader.fail()) {
     std::cerr << "fail: " << shader.errorMessage() << '\n';
     return;

@@ -1,93 +1,102 @@
 #define GLFW_INCLUDE_NONE
 #include "engine/shader.hpp"
+#include "engine/gl.hpp"
 #include "engine/utils.hpp"
 
-#include <format>
+#include <fmt/format.h>
+
+#include <algorithm>
+#include <iterator>
 #include <variant>
 
 namespace ll::engine {
 
-Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
-  auto vShaderCode = utils::readFullFile(vertexShaderPath);
-  if (!vShaderCode) {
-    _hasError = true;
-    _message = std::format("failed to read vertex shader {}", vertexShaderPath);
-    return;
-  }
-  auto fShaderCode = utils::readFullFile(fragmentShaderPath);
-  if (!fShaderCode) {
-    _hasError = true;
-    _message = std::format("failed to read fragment shader {}", fragmentShaderPath);
-    return;
-  }
-  auto v = utils::gl::compileShader(vShaderCode.value(), utils::gl::ShaderType::VERTEX);
-  if (std::holds_alternative<std::string>(v)) {
-    _hasError = true;
-    _message = std::format("failed to compile vertex shader:\n{}", std::get<std::string>(v));
-    return;
-  }
-  auto vId = std::get<GLuint>(v);
-  auto f = utils::gl::compileShader(fShaderCode.value(), utils::gl::ShaderType::FRAGMENT);
-  if (std::holds_alternative<std::string>(f)) {
-    _hasError = true;
-    _message = std::format("failed to compile fragment shader:\n{}", std::get<std::string>(f));
-    glDeleteShader(vId);
-    return;
-  }
-  auto fId = std::get<GLuint>(f);
+ShaderBase::~ShaderBase() = default;
 
-  auto p = utils::gl::createProgram({vId, fId});
-  if (std::holds_alternative<std::string>(p)) {
+Shader::Shader(const std::string& path, gl::ShaderType type) : _type(type) {
+  auto code = utils::readFullFile(path);
+  if (!code) {
     _hasError = true;
-    _message = std::format("failed to create program:\n{}", std::get<std::string>(p));
-  } else {
-    _hasError = false;
-    _programId = std::get<GLuint>(p);
+    _message = fmt::format("failed to read {} shader {}", fmt::enums::format_as(type), path);
+    return;
   }
-
-  glDeleteShader(vId);
-  glDeleteShader(fId);
+  auto shader = utils::gl::compileShader(code.value(), type);
+  if (std::holds_alternative<std::string>(shader)) {
+    _hasError = true;
+    _message = fmt::format("failed to compile {} shader:\n{}", fmt::enums::format_as(type), std::get<std::string>(shader));
+    return;
+  }
+  _id = std::get<GLuint>(shader);
 }
 
 Shader::~Shader() {
   if (_hasError)
     return;
-  glDeleteProgram(_programId);
+  glDeleteShader(_id);
 }
 
-void Shader::use() {
+ShaderProgram::ShaderProgram(const std::vector<Shader>& shaders) {
+  std::vector<GLuint> ids;
+  ids.reserve(shaders.size());
+  std::transform(
+    shaders.begin(),
+    shaders.end(),
+    std::back_inserter(ids),
+    [](const Shader& s) { return s.id(); });
+  auto p = utils::gl::createProgram(ids);
+  if (std::holds_alternative<std::string>(p)) {
+    _hasError = true;
+    _message = fmt::format("failed to create program:\n{}", std::get<std::string>(p));
+  } else {
+    _hasError = false;
+    _id = std::get<GLuint>(p);
+  }
+}
+
+ShaderProgram::~ShaderProgram() {
   if (_hasError)
     return;
-  glUseProgram(_programId);
+  glDeleteProgram(_id);
 }
 
-GLint Shader::getUniformLocation(const std::string& name) {
-  return glGetUniformLocation(_programId, name.c_str());
+void ShaderProgram::use() {
+  if (_hasError)
+    return;
+  glUseProgram(_id);
 }
 
-template <>
-void Shader::setUniform<GLint>(const std::string& name, GLint i) {
-  glUniform1i(getUniformLocation(name), i);
+GLint ShaderProgram::getUniformLocation(const std::string& name) {
+  return glGetUniformLocation(_id, name.c_str());
 }
 
-template <>
-void Shader::setUniform<bool>(const std::string& name, bool b) {
-  glUniform1i(getUniformLocation(name), static_cast<GLint>(b));
-}
-
-template <>
-void Shader::setUniform<GLfloat>(const std::string& name, GLfloat f) {
-  glUniform1f(getUniformLocation(name), f);
+template <typename T, typename... Ts>
+void ShaderProgram::setUniform(const std::string&, T, Ts...) {
+  static_assert(sizeof(T) == 0, "no such definition");
 }
 
 template <>
-void Shader::setUniform<GLfloat>(const std::string& name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+[[maybe_unused]] void ShaderProgram::setUniform<GLint>(const std::string& name, GLint value) {
+  glUniform1i(getUniformLocation(name), value);
+}
+
+template <>
+[[maybe_unused]] void ShaderProgram::setUniform<bool>(const std::string& name, bool value) {
+  glUniform1i(getUniformLocation(name), static_cast<GLint>(value));
+}
+
+template <>
+void ShaderProgram::setUniform<GLfloat>(const std::string& name, GLfloat value) {
+  glUniform1f(getUniformLocation(name), value);
+}
+
+template <>
+[[maybe_unused]] void ShaderProgram::setUniform<GLfloat>(const std::string& name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
   glUniform4f(getUniformLocation(name), x, y, z, w);
 }
 
 template <>
-void Shader::setUniform<glm::vec4>(const std::string& name, glm::vec4 fs) {
-  glUniform4f(getUniformLocation(name), fs.x, fs.y, fs.z, fs.w);
+[[maybe_unused]] void ShaderProgram::setUniform<glm::vec4>(const std::string& name, glm::vec4 value) {
+  glUniform4f(getUniformLocation(name), value.x, value.y, value.z, value.w);
 }
 
 }// namespace ll::engine

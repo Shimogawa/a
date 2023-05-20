@@ -1,12 +1,13 @@
 add_rules("mode.debug", "mode.release")
-add_requires("glfw", "glm")
+add_requires("glfw", "glm", "fmt")
 set_languages("c++20")
+add_defines("_HAS_EXCEPTIONS=0")
 
 target("logl")
     set_kind("binary")
     add_files("src/**.cpp", "src/**.c")
     add_includedirs("include", "include/imgui")
-    add_packages("glfw", "glm")
+    add_packages("glfw", "glm", "fmt")
 
 
 --

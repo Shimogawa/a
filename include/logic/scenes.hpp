@@ -21,7 +21,7 @@ void setCurrentScene(std::shared_ptr<s::AbstractScene> s);
 
 class Scene1 : public s::AbstractScene {
 private:
-  ll::engine::Shader shader;
+  ll::engine::ShaderProgram shader;
   GLuint vao;
   GLuint vbo;
 

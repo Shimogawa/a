@@ -1,6 +1,8 @@
 #pragma once
 
+#include "engine/gl.hpp"
 #include "engine/utils.hpp"
+
 #include <cstddef>
 #include <fstream>
 #include <initializer_list>
@@ -30,10 +32,6 @@ inline constexpr bool sizeIs(std::initializer_list<float> ll, size_t s) {
 }
 
 namespace gl {
-  enum ShaderType {
-    VERTEX,
-    FRAGMENT,
-  };
 
   enum IdType {
     SHADER,
@@ -53,18 +51,18 @@ namespace gl {
       else
         glGetProgramiv(id, GL_INFO_LOG_LENGTH, &len);
       if (len == 0) return "";
-      char log[len];
+      std::string log(len, 0);
       if (idType == IdType::SHADER)
-        glGetShaderInfoLog(id, len, nullptr, log);
+        glGetShaderInfoLog(id, len, nullptr, log.data());
       else
-        glGetProgramInfoLog(id, len, nullptr, log);
+        glGetProgramInfoLog(id, len, nullptr, log.data());
       return std::string(log);
     }
     return {};
   }
 
-  inline std::variant<GLuint, std::string> compileShader(const std::string& code, ShaderType shaderType) {
-    GLuint id = glCreateShader(shaderType == ShaderType::VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
+  inline std::variant<GLuint, std::string> compileShader(const std::string& code, ll::engine::gl::ShaderType shaderType) {
+    GLuint id = glCreateShader(shaderType == ll::engine::gl::ShaderType::VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
     auto codeCstr = code.c_str();
     glShaderSource(id, 1, &codeCstr, NULL);
     glCompileShader(id);
@@ -76,7 +74,7 @@ namespace gl {
     return id;
   }
 
-  inline std::variant<GLuint, std::string> createProgram(std::initializer_list<GLuint> shaders) {
+  inline std::variant<GLuint, std::string> createProgram(const std::vector<GLuint>& shaders) {
     GLuint id = glCreateProgram();
     for (auto& sId: shaders) {
       glAttachShader(id, sId);
