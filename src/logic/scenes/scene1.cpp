@@ -1,15 +1,17 @@
 #define GLFW_INCLUDE_NONE
 #include "imgui.h"
 
-#include "engine/shader.hpp"
+#include "engine/gl/shader.hpp"
+#include "engine/window.hpp"
 #include "logic/scenes.hpp"
 
+#include <memory>
 #include <string>
 
 namespace ll::logic::scenes {
 
-Scene1::Scene1(GLFWwindow* window)
-    : s::AbstractScene(window),
+Scene1::Scene1(std::shared_ptr<ll::engine::Window> window)
+    : s::AbstractScene(std::move(window)),
       shader(
         engine::Shader("res/shaders/scene1/vertex.glsl", engine::gl::ShaderType::VERTEX),
         engine::Shader("res/shaders/scene1/fragment.glsl", engine::gl::ShaderType::FRAGMENT)) {
@@ -45,13 +47,13 @@ Scene1::~Scene1() {
   glDeleteBuffers(1, &vbo);
 }
 
-void Scene1::drawImgui() {
+void Scene1::updateImgui() {
   ImGui::Begin("Scene 1");
   ImGui::SliderFloat3("RGB", color, 0.0f, 1.0f);
   ImGui::End();
 }
 
-void Scene1::draw() {
+void Scene1::update() {
   shader.use();
   shader.setUniform("ourColor", color[0], color[1], color[2], 1.0f);
   glBindVertexArray(vao);

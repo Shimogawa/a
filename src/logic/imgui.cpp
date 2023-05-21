@@ -18,14 +18,14 @@ static int fc = 0;
 
 std::vector<std::shared_ptr<ll::engine::scene::AbstractScene>> scenes;
 
-void imguiInit(GLFWwindow* window) {
+void imguiInit(std::shared_ptr<ll::engine::Window> window) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
   ImGui::StyleColorsDark();
-  ImGui_ImplGlfw_InitForOpenGL(window, true);
+  ImGui_ImplGlfw_InitForOpenGL(window->glfwWindow(), true);
   ImGui_ImplOpenGL3_Init("#version 130");
   io.Fonts->AddFontFromFileTTF("./res/Ubuntu.ttf", 18.0f);
 
@@ -73,7 +73,7 @@ void updateImguiFrame(
     ImGui::End();
   }
   if (scene != nullptr)
-    scene->drawImgui();
+    scene->updateImgui();
 
   ImGui::Render();
 }

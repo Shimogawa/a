@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fmt/core.h>
+
 #include <glad/glad.h>
 
 namespace ll::engine::gl {

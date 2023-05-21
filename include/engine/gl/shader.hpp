@@ -9,7 +9,7 @@
 #include <type_traits>
 #include <vector>
 
-#include "engine/gl.hpp"
+#include "engine/gl/gl.hpp"
 #include "engine/utils.hpp"
 
 namespace ll::engine {
@@ -52,8 +52,18 @@ public:
 
   template <typename T, typename... Ts>
   void setUniform(const std::string& name, T value, Ts... values);
+  template <>
+  void setUniform<GLint>(const std::string& name, GLint value);
+  template <>
+  void setUniform<>(const std::string& name, bool value);
+  template <>
+  void setUniform<>(const std::string& name, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
 };
 
+template <typename T, typename... Ts>
+void ShaderProgram::setUniform(const std::string&, T, Ts...) {
+  static_assert(sizeof(T) == 0, "no such definition");
+}
 
 template <typename... T>
 requires(std::is_same_v<Shader, T> && ...)

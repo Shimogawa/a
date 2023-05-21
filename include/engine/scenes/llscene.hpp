@@ -1,31 +1,30 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include <stdint.h>
+
+#include <cstdint>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "engine/object.hpp"
+#include "engine/window.hpp"
 
 namespace ll::engine::scene {
 
-class AbstractScene : public EngineObject {
+class AbstractScene : public WindowedObject {
 private:
-  uint64_t _id;
+  std::vector<std::shared_ptr<EngineObject>> _objects;
 
 public:
   virtual ~AbstractScene() = 0;
 
   virtual std::string name() = 0;
 
-  virtual void drawImgui() = 0;
-  virtual void draw() = 0;
-
-  inline uint64_t id() {
-    return _id;
-  }
+  void addObject(const std::shared_ptr<EngineObject>& o);
 
 protected:
-  explicit AbstractScene(GLFWwindow* window);
+  explicit AbstractScene(std::shared_ptr<Window> window) : WindowedObject(std::move(window)) {}
 };
 
 }// namespace ll::engine::scene

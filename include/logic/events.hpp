@@ -1,7 +1,10 @@
 #pragma once
 
+#define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
+
 #include "engine/events/llevents.hpp"
+
 #include <memory>
 
 namespace ll::logic::events {

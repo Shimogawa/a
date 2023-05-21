@@ -4,8 +4,8 @@
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
 
+#include "engine/gl/shader.hpp"
 #include "engine/scenes/llscene.hpp"
-#include "engine/shader.hpp"
 
 #include <memory>
 #include <string>
@@ -28,10 +28,10 @@ private:
   float color[3] = {0.0f};
 
 public:
-  Scene1(GLFWwindow* window);
+  Scene1(std::shared_ptr<ll::engine::Window> window);
   ~Scene1();
-  void drawImgui() override;
-  void draw() override;
+  void updateImgui() override;
+  void update() override;
   std::string name() override;
 };
 

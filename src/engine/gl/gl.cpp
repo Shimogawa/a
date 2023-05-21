@@ -1,6 +1,6 @@
 #include <fmt/format.h>
 
-#include "engine/gl.hpp"
+#include "engine/gl/gl.hpp"
 
 namespace ll::engine::gl {
 

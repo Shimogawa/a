@@ -1,6 +1,6 @@
 #define GLFW_INCLUDE_NONE
-#include "engine/shader.hpp"
-#include "engine/gl.hpp"
+#include "engine/gl/shader.hpp"
+#include "engine/gl/gl.hpp"
 #include "engine/utils.hpp"
 
 #include <fmt/format.h>
@@ -69,28 +69,23 @@ GLint ShaderProgram::getUniformLocation(const std::string& name) {
   return glGetUniformLocation(_id, name.c_str());
 }
 
-template <typename T, typename... Ts>
-void ShaderProgram::setUniform(const std::string&, T, Ts...) {
-  static_assert(sizeof(T) == 0, "no such definition");
-}
-
 template <>
-[[maybe_unused]] void ShaderProgram::setUniform<GLint>(const std::string& name, GLint value) {
+[[maybe_unused]] void ShaderProgram::setUniform<>(const std::string& name, GLint value) {
   glUniform1i(getUniformLocation(name), value);
 }
 
 template <>
-[[maybe_unused]] void ShaderProgram::setUniform<bool>(const std::string& name, bool value) {
+[[maybe_unused]] void ShaderProgram::setUniform<>(const std::string& name, bool value) {
   glUniform1i(getUniformLocation(name), static_cast<GLint>(value));
 }
 
 template <>
-void ShaderProgram::setUniform<GLfloat>(const std::string& name, GLfloat value) {
+void ShaderProgram::setUniform<>(const std::string& name, GLfloat value) {
   glUniform1f(getUniformLocation(name), value);
 }
 
 template <>
-[[maybe_unused]] void ShaderProgram::setUniform<GLfloat>(const std::string& name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+[[maybe_unused]] void ShaderProgram::setUniform<>(const std::string& name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
   glUniform4f(getUniformLocation(name), x, y, z, w);
 }
 
