@@ -6,6 +6,7 @@
 
 #include "engine/gl/shader.hpp"
 #include "engine/scenes/llscene.hpp"
+#include "engine/window_state.hpp"
 
 #include <memory>
 #include <string>
@@ -15,9 +16,9 @@ namespace ll::logic::scenes {
 
 namespace s = ll::engine::scene;
 
-std::shared_ptr<s::AbstractScene> getCurrentScene();
+void init(std::shared_ptr<engine::WindowState> w);
 
-void setCurrentScene(std::shared_ptr<s::AbstractScene> s);
+const std::vector<std::shared_ptr<s::AbstractScene>>& scenes();
 
 class Scene1 : public s::AbstractScene {
 private:
@@ -28,10 +29,10 @@ private:
   float color[3] = {0.0f};
 
 public:
-  Scene1(std::shared_ptr<ll::engine::Window> window);
+  Scene1(std::shared_ptr<engine::Window> window);
   ~Scene1();
-  void updateImgui() override;
-  void update() override;
+  // void updateImgui() override;
+  // void update() override;
   std::string name() override;
 };
 

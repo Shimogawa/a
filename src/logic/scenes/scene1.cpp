@@ -10,7 +10,7 @@
 
 namespace ll::logic::scenes {
 
-Scene1::Scene1(std::shared_ptr<ll::engine::Window> window)
+Scene1::Scene1(std::shared_ptr<engine::Window> window)
     : s::AbstractScene(std::move(window)),
       shader(
         engine::Shader("res/shaders/scene1/vertex.glsl", engine::gl::ShaderType::VERTEX),
@@ -47,18 +47,18 @@ Scene1::~Scene1() {
   glDeleteBuffers(1, &vbo);
 }
 
-void Scene1::updateImgui() {
-  ImGui::Begin("Scene 1");
-  ImGui::SliderFloat3("RGB", color, 0.0f, 1.0f);
-  ImGui::End();
-}
-
-void Scene1::update() {
-  shader.use();
-  shader.setUniform("ourColor", color[0], color[1], color[2], 1.0f);
-  glBindVertexArray(vao);
-  glDrawArrays(GL_TRIANGLES, 0, 3);
-}
+// void Scene1::updateImgui() {
+//   ImGui::Begin("Scene 1");
+//   ImGui::SliderFloat3("RGB", color, 0.0f, 1.0f);
+//   ImGui::End();
+// }
+//
+// void Scene1::update() {
+//   shader.use();
+//   shader.setUniform("ourColor", color[0], color[1], color[2], 1.0f);
+//   glBindVertexArray(vao);
+//   glDrawArrays(GL_TRIANGLES, 0, 3);
+// }
 
 std::string Scene1::name() {
   return "Scene 1";

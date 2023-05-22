@@ -23,7 +23,7 @@ public:
   virtual void postUpdate() {}
 
 
-  [[nodiscard]] inline ObjectId id() const { return _id; }
+  [[nodiscard]] ObjectId id() const { return _id; }
   static EngineObject& findObject(ObjectId id);
   bool objectExists(ObjectId id);
 

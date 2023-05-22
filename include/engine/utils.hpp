@@ -133,7 +133,7 @@ namespace gl {
   inline std::variant<GLuint, std::string> compileShader(const std::string& code, ll::engine::gl::ShaderType shaderType) {
     GLuint id = glCreateShader(shaderType == ll::engine::gl::ShaderType::VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
     auto codeCstr = code.c_str();
-    glShaderSource(id, 1, &codeCstr, NULL);
+    glShaderSource(id, 1, &codeCstr, nullptr);
     glCompileShader(id);
 
     auto successOrLog = isSuccessfulOrLog(id, IdType::SHADER);
@@ -158,5 +158,14 @@ namespace gl {
   }
 
 }// namespace gl
+
+namespace ptr {
+
+  template <typename To, typename From>
+  std::unique_ptr<To> uniquePtrStaticCast(std::unique_ptr<From>& p) {
+    return std::unique_ptr<To>(static_cast<To*>(p.release()));
+  }
+
+}// namespace ptr
 
 }// namespace ll::engine::utils

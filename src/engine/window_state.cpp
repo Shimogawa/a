@@ -2,7 +2,7 @@
 
 namespace ll::engine {
 
-inline std::shared_ptr<scene::AbstractScene> WindowState::currentScene() {
+std::shared_ptr<scene::AbstractScene> WindowState::currentScene() {
   return _currentScene;
 }
 
