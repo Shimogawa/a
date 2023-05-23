@@ -13,20 +13,21 @@ static bool showMetrics = true;
 
 void MainImguiObject::renderImgui(ll::engine::Window& w) {
   auto windowState = ll::engine::Engine::instance().getWindowState(w);
+  auto& scenes = ll::logic::scenes::scenes();
   fc++;
 
   // ImGui::ShowDemoWindow(nullptr);
   {
     ImGui::Begin("Info");
     ImGui::BeginChild("scenes", ImVec2(0, ImGui::GetFrameHeightWithSpacing() + 30), true, ImGuiWindowFlags_HorizontalScrollbar);
-    if (ImGui::Button("Clear scene"))
-      windowState->setScene(nullptr);
+    // if (ImGui::Button("Clear scene"))
+    //   windowState->setScene(scenes.at("Main Scene"));
 
-    for (const auto& s: ll::logic::scenes::scenes()) {
+    for (const auto& x: scenes) {
       ImGui::SameLine();
-      ImGui::PushID(static_cast<int>(s->id()));
-      if (ImGui::Button(s->name().c_str()))
-        windowState->setScene(s);
+      ImGui::PushID(static_cast<int>(x.second->id()));
+      if (ImGui::Button(x.second->name().c_str()))
+        windowState->setScene(x.second);
       ImGui::PopID();
     }
     // ImGui::SameLine();

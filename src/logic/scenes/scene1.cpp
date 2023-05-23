@@ -10,42 +10,42 @@
 
 namespace ll::logic::scenes {
 
-Scene1::Scene1(std::shared_ptr<engine::Window> window)
-    : s::AbstractScene(std::move(window)),
-      shader(
-        engine::Shader("res/shaders/scene1/vertex.glsl", engine::gl::ShaderType::VERTEX),
-        engine::Shader("res/shaders/scene1/fragment.glsl", engine::gl::ShaderType::FRAGMENT)) {
-  if (shader.fail()) {
-    std::cerr << "fail: " << shader.errorMessage() << '\n';
-    return;
-  }
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-  glEnableVertexAttribArray(0);
-
-  float vertices[] = {
-    -0.5f, -0.5f, 0.0f,// left
-    0.5f, -0.5f, 0.0f, // right
-    0.0f, 0.5f, 0.0f   // top
-  };
-
-  glGenVertexArrays(1, &vao);
-  glGenBuffers(1, &vbo);
-  glBindVertexArray(vao);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
-  glEnableVertexAttribArray(0);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
-}
-
-Scene1::~Scene1() {
-  glDeleteVertexArrays(1, &vao);
-  glDeleteBuffers(1, &vbo);
-}
+// Scene1::Scene1(std::shared_ptr<engine::Window> window)
+//     : s::AbstractScene(std::move(window)),
+//       shader(
+//         engine::Shader("res/shaders/scene1/vertex.glsl", engine::gl::ShaderType::VERTEX),
+//         engine::Shader("res/shaders/scene1/fragment.glsl", engine::gl::ShaderType::FRAGMENT)) {
+//   if (shader.fail()) {
+//     std::cerr << "fail: " << shader.errorMessage() << '\n';
+//     return;
+//   }
+//   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+//   glEnableVertexAttribArray(0);
+//
+//   float vertices[] = {
+//     -0.5f, -0.5f, 0.0f,// left
+//     0.5f, -0.5f, 0.0f, // right
+//     0.0f, 0.5f, 0.0f   // top
+//   };
+//
+//   glGenVertexArrays(1, &vao);
+//   glGenBuffers(1, &vbo);
+//   glBindVertexArray(vao);
+//
+//   glBindBuffer(GL_ARRAY_BUFFER, vbo);
+//   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+//
+//   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+//   glEnableVertexAttribArray(0);
+//
+//   glBindBuffer(GL_ARRAY_BUFFER, 0);
+//   glBindVertexArray(0);
+// }
+//
+// Scene1::~Scene1() {
+//   glDeleteVertexArrays(1, &vao);
+//   glDeleteBuffers(1, &vbo);
+// }
 
 // void Scene1::updateImgui() {
 //   ImGui::Begin("Scene 1");

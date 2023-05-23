@@ -18,21 +18,17 @@ namespace s = ll::engine::scene;
 
 void init(std::shared_ptr<engine::WindowState> w);
 
-const std::vector<std::shared_ptr<s::AbstractScene>>& scenes();
+const std::unordered_map<std::string, std::shared_ptr<s::AbstractScene>>& scenes();
+
+class MainScene : public s::AbstractScene {
+public:
+  MainScene(std::shared_ptr<engine::Window> window) : s::AbstractScene(std::move(window)) {}
+  std::string name() override;
+};
 
 class Scene1 : public s::AbstractScene {
-private:
-  ll::engine::ShaderProgram shader;
-  GLuint vao;
-  GLuint vbo;
-
-  float color[3] = {0.0f};
-
 public:
-  Scene1(std::shared_ptr<engine::Window> window);
-  ~Scene1();
-  // void updateImgui() override;
-  // void update() override;
+  Scene1(std::shared_ptr<engine::Window> window) : s::AbstractScene(std::move(window)) {}
   std::string name() override;
 };
 

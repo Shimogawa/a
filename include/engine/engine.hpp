@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 
 #include "engine/object.hpp"
+#include "engine/scenes/llscene.hpp"
 #include "engine/window_state.hpp"
 
 namespace ll::engine {
@@ -43,6 +44,7 @@ public:
 
   std::shared_ptr<WindowState> findWindowByGlfwWindow(GLFWwindow* window);
   std::shared_ptr<WindowState> getWindowState(Window& window);
+  std::shared_ptr<scene::AbstractScene> getCurrentScene(Window& window);
 
   static void clearWindowContext();
   static Engine& instance();
