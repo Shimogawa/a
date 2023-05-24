@@ -4,6 +4,8 @@
 #include "engine/utils.hpp"
 
 #include <fmt/format.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <algorithm>
 #include <iterator>
@@ -26,6 +28,7 @@ Shader::Shader(const std::string& path, gl::ShaderType type) : _type(type) {
     _message = fmt::format("failed to compile {} shader:\n{}", fmt::enums::format_as(type), std::get<std::string>(shader));
     return;
   }
+  _hasError = false;
   _id = std::get<GLuint>(shader);
 }
 
@@ -38,11 +41,19 @@ Shader::~Shader() {
 ShaderProgram::ShaderProgram(const std::vector<Shader>& shaders) {
   std::vector<GLuint> ids;
   ids.reserve(shaders.size());
-  std::transform(
-    shaders.begin(),
-    shaders.end(),
-    std::back_inserter(ids),
-    [](const Shader& s) { return s.id(); });
+  bool failed = false;
+  for (auto& s: shaders) {
+    if (s.fail()) {
+      failed = true;
+      _message.append(fmt::format("failed to load shader: {}\n", s.errorMessage()));
+      continue;
+    }
+    ids.push_back(s.id());
+  }
+  if (failed) {
+    _hasError = true;
+    return;
+  }
   auto p = utils::gl::createProgram(ids);
   if (std::holds_alternative<std::string>(p)) {
     _hasError = true;
@@ -69,6 +80,10 @@ GLint ShaderProgram::getUniformLocation(const std::string& name) {
   return glGetUniformLocation(_id, name.c_str());
 }
 
+GLint ShaderProgram::getAttribLocation(const std::string& name) {
+  return glGetAttribLocation(_id, name.c_str());
+}
+
 template <>
 [[maybe_unused]] void ShaderProgram::setUniform<>(const std::string& name, GLint value) {
   glUniform1i(getUniformLocation(name), value);
@@ -92,6 +107,11 @@ template <>
 template <>
 [[maybe_unused]] void ShaderProgram::setUniform<glm::vec4>(const std::string& name, glm::vec4 value) {
   glUniform4f(getUniformLocation(name), value.x, value.y, value.z, value.w);
+}
+
+template <>
+[[maybe_unused]] void ShaderProgram::setUniformMatrix<>(const std::string& name, glm::highp_mat4& value, bool transpose) {
+  glUniformMatrix4fv(getUniformLocation(name), 1, transpose, glm::value_ptr(value));
 }
 
 }// namespace ll::engine

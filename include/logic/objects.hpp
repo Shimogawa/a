@@ -42,4 +42,20 @@ namespace scene1 {
 
 }// namespace scene1
 
+namespace scene2 {
+
+  class Circle : public ll::engine::scene::RenderableObject {
+  private:
+    ll::engine::ShaderProgram _shader;
+    GLuint _vao = 0;
+    GLuint _vbo = 0;
+
+  public:
+    Circle();
+    ~Circle();
+    void render(ll::engine::Window& w) override;
+  };
+
+}// namespace scene2
+
 }// namespace ll::logic::objects

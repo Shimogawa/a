@@ -25,7 +25,7 @@ public:
 
   [[nodiscard]] inline bool ok() const { return !_hasError; }
   [[nodiscard]] inline bool fail() const { return _hasError; }
-  inline std::string errorMessage() { return _message; }
+  [[nodiscard]] inline std::string errorMessage() const { return _message; }
 };
 
 class Shader : public ShaderBase {
@@ -49,6 +49,7 @@ public:
 
   void use();
   GLint getUniformLocation(const std::string& name);
+  GLint getAttribLocation(const std::string& name);
 
   template <typename T, typename... Ts>
   void setUniform(const std::string& name, T value, Ts... values);
@@ -58,10 +59,24 @@ public:
   void setUniform<>(const std::string& name, bool value);
   template <>
   void setUniform<>(const std::string& name, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+
+  template <int C, int R, typename T, glm::qualifier P>
+  void setUniformMatrix(const std::string& name, glm::mat<C, R, T, P>& value, bool transpose = false);
+  template <>
+  void setUniformMatrix<>(const std::string& name, glm::highp_mat4& value, bool transpose);
+  template <>
+  void setUniformMatrix<>(const std::string& name, glm::lowp_mat4& value, bool transpose);
+  template <>
+  void setUniformMatrix<>(const std::string& name, glm::mediump_mat4& value, bool transpose);
 };
 
 template <typename T, typename... Ts>
 void ShaderProgram::setUniform(const std::string&, T, Ts...) {
+  static_assert(sizeof(T) == 0, "no such definition");
+}
+
+template <int C, int R, typename T, glm::qualifier P>
+void ShaderProgram::setUniformMatrix(const std::string&, glm::mat<C, R, T, P>&, bool) {
   static_assert(sizeof(T) == 0, "no such definition");
 }
 

@@ -15,7 +15,7 @@ void imguiInit(Window& window) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGui_ImplGlfw_InitForOpenGL(window.glfwWindow(), true);
-  ImGui_ImplOpenGL3_Init("#version 130");
+  ImGui_ImplOpenGL3_Init("#version 330");
 }
 
 void imguiDestroy() {
@@ -165,11 +165,24 @@ std::shared_ptr<WindowState> Engine::getWindowState(Window& window) {
   return findWindowByGlfwWindow(window.glfwWindow());
 }
 
+std::shared_ptr<scene::AbstractScene> Engine::getCurrentScene(ll::engine::Window& window) {
+  return getWindowState(window)->currentScene();
+}
+
+void Engine::addShutdownHook(ShutdownHookFunc* func) {
+  _shutdownHooks.push_back(func);
+}
+
 void Engine::clearWindowContext() {
   glfwMakeContextCurrent(nullptr);
 }
 
 Engine::~Engine() {
+  _windows.clear();
+  _glfwWindowMap.clear();
+  for (auto& f: _shutdownHooks) {
+    f();
+  }
   glfwTerminate();
 }
 

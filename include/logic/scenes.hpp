@@ -16,7 +16,9 @@ namespace ll::logic::scenes {
 
 namespace s = ll::engine::scene;
 
-void init(std::shared_ptr<engine::WindowState> w);
+void init(const std::shared_ptr<engine::WindowState>& w);
+
+void cleanup();
 
 const std::unordered_map<std::string, std::shared_ptr<s::AbstractScene>>& scenes();
 
@@ -30,6 +32,12 @@ class Scene1 : public s::AbstractScene {
 public:
   Scene1(std::shared_ptr<engine::Window> window) : s::AbstractScene(std::move(window)) {}
   std::string name() override;
+};
+
+class Scene2 : public s::AbstractScene {
+public:
+  Scene2(std::shared_ptr<engine::Window> window) : s::AbstractScene(std::move(window)) {}
+  std::string name() override { return (char*) u8"原神，启动！"; }
 };
 
 }// namespace ll::logic::scenes

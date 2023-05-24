@@ -15,14 +15,9 @@
 namespace ll::engine {
 
 class Engine : EngineObject {
-private:
-  std::unordered_map<ObjectId, std::shared_ptr<WindowState>> _windows;
-  std::unordered_map<GLFWwindow*, ObjectId> _glfwWindowMap;
-  bool _finished = false;
-
-  Engine();
-
 public:
+  using ShutdownHookFunc = void();
+
   ~Engine() override;
   Engine(const Engine&) = delete;
   Engine(Engine&&) = delete;
@@ -46,8 +41,18 @@ public:
   std::shared_ptr<WindowState> getWindowState(Window& window);
   std::shared_ptr<scene::AbstractScene> getCurrentScene(Window& window);
 
+  void addShutdownHook(ShutdownHookFunc* func);
+
   static void clearWindowContext();
   static Engine& instance();
+
+private:
+  std::unordered_map<ObjectId, std::shared_ptr<WindowState>> _windows;
+  std::unordered_map<GLFWwindow*, ObjectId> _glfwWindowMap;
+  std::vector<ShutdownHookFunc*> _shutdownHooks;
+  bool _finished = false;
+
+  Engine();
 };
 
 template <typename T>

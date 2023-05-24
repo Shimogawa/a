@@ -94,6 +94,11 @@ int main() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
     io.Fonts->AddFontFromFileTTF("./res/Ubuntu.ttf", 18.0f);
+    ImFontConfig config;
+    config.MergeMode = true;
+    io.Fonts->AddFontFromFileTTF("./res/NotoSansSC-Regular.otf", 22.0f, &config, io.Fonts->GetGlyphRangesChineseFull());
+    io.Fonts->Build();
+
     ImGui::StyleColorsDark();
 
     ll::logic::scenes::init(w);
@@ -109,6 +114,10 @@ int main() {
     });
 
   ll::engine::Engine::instance().startLoop();
+
+  ll::engine::Engine::instance().addShutdownHook([]() {
+    ll::logic::scenes::cleanup();
+  });
 
   // renderLoop(ws->window()->glfwWindow());
   //
