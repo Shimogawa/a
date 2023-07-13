@@ -1,3 +1,9 @@
+// workaround for ASAN to check DLs
+extern "C" {
+#include <stdio.h>
+int dlclose(void*) { return 0; }
+}
+
 #define GLFW_INCLUDE_NONE
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
