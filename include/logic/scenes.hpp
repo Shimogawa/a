@@ -5,6 +5,7 @@
 #include "glad/glad.h"
 
 #include "engine/gl/shader.hpp"
+#include "engine/gl/texture.hpp"
 #include "engine/scenes/llscene.hpp"
 #include "engine/window_state.hpp"
 
@@ -31,7 +32,7 @@ public:
 class Scene1 : public s::AbstractScene {
 public:
   Scene1(std::shared_ptr<engine::Window> window) : s::AbstractScene(std::move(window)) {}
-  std::string name() override;
+  std::string name() override { return "Simple Triangle"; }
 };
 
 class Scene2 : public s::AbstractScene {

@@ -119,8 +119,5 @@ int main() {
     ll::logic::scenes::cleanup();
   });
 
-  // renderLoop(ws->window()->glfwWindow());
-  //
-  // cleanUp(ws->window()->glfwWindow());
   return 0;
 }

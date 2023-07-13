@@ -12,6 +12,9 @@ set(IMGUI_SRC_DIR ${CMAKE_SOURCE_DIR}/lib/imgui)
 
 add_compile_definitions(_HAS_EXCEPTIONS=0)
 
+add_compile_options(-fsanitize=address)
+add_link_options(-fsanitize=address)
+
 file(GLOB_RECURSE SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/src/*.c
         ${CMAKE_SOURCE_DIR}/src/*.cpp)
@@ -29,5 +32,6 @@ include_directories(
         "${CMAKE_SOURCE_DIR}/include/imgui"
 )
 
-add_executable(logl ${SOURCE_FILES} ${HEADER_FILES})
-target_link_libraries(logl PRIVATE glfw glm fmt)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw glm fmt)
+

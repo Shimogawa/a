@@ -1,5 +1,8 @@
 #include "engine/engine.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 #define GLFW_INCLUDE_NONE
 #include "imgui.h"
 #include "imgui_impl_glfw.h"

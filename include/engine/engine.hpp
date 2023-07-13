@@ -1,5 +1,7 @@
 #pragma once
 
+#include "stb_image.h"
+
 #include <memory>
 #include <string>
 #include <unordered_map>

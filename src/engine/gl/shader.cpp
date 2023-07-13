@@ -13,8 +13,6 @@
 
 namespace ll::engine {
 
-ShaderBase::~ShaderBase() = default;
-
 Shader::Shader(const std::string& path, gl::ShaderType type) : _type(type) {
   auto code = utils::readFullFile(path);
   if (!code) {

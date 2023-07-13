@@ -1,5 +1,7 @@
 #pragma once
 
+#include "engine/gl/shader.hpp"
+#include "engine/gl/texture.hpp"
 #include "engine/scenes/llscene.hpp"
 #include "engine/window.hpp"
 #include "logic/scenes.hpp"
@@ -18,6 +20,7 @@ namespace scene1 {
   class SimpleTriangle : public ll::engine::scene::RenderableObject {
   private:
     ll::engine::ShaderProgram _shader;
+    ll::engine::Texture _texture;
     GLuint _vao = 0;
     GLuint _vbo = 0;
     glm::vec3 _color = {0.0f, 0.0f, 0.0f};

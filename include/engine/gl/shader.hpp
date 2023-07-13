@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
+#include <cassert>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -14,21 +15,7 @@
 
 namespace ll::engine {
 
-class ShaderBase : public gl::GLObject {
-protected:
-  ShaderBase() = default;
-  bool _hasError = true;
-  std::string _message;
-
-public:
-  virtual ~ShaderBase() = 0;
-
-  [[nodiscard]] inline bool ok() const { return !_hasError; }
-  [[nodiscard]] inline bool fail() const { return _hasError; }
-  [[nodiscard]] inline std::string errorMessage() const { return _message; }
-};
-
-class Shader : public ShaderBase {
+class Shader : public gl::GLObject {
 private:
   gl::ShaderType _type;
 
@@ -39,7 +26,7 @@ public:
   inline gl::ShaderType type() { return _type; }
 };
 
-class ShaderProgram : public ShaderBase {
+class ShaderProgram : public gl::GLUsableObject {
 public:
   template <typename... T>
   requires(std::is_same_v<Shader, T> && ...)
@@ -47,7 +34,9 @@ public:
   explicit ShaderProgram(const std::vector<Shader>& shaders);
   ~ShaderProgram() override;
 
-  void use();
+  void use() override;
+  void use(GLenum) override { assert(false && "you can't use this function"); }
+
   GLint getUniformLocation(const std::string& name);
   GLint getAttribLocation(const std::string& name);
 

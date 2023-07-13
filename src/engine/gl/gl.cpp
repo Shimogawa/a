@@ -6,4 +6,6 @@ namespace ll::engine::gl {
 
 GLObject::~GLObject() = default;
 
+GLUsableObject::~GLUsableObject() = default;
+
 }// namespace ll::engine::gl

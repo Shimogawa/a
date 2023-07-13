@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <fstream>
 #include <initializer_list>
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <queue>
